@@ -1,0 +1,50 @@
+<script type="text/javascript">
+  RED.nodes.registerType('mihome-cloud', {
+    category: 'config',
+    color: '#00BC9C',
+    defaults: {
+      country: { value: 'ru' },
+      email: { value: null },
+    },
+    credentials: {
+      email: { type: 'text' },
+      password: { type: 'password' },
+    },
+    label() {
+      const { email } = this;
+
+      if (email == null) {
+        return 'Login to Mi Home';
+      }
+
+      return `Mi Home: ${email}`;
+    },
+    oneditsave() {
+      this.email = this.credentials.email;
+    },
+  });
+</script>
+<script type="text/html" data-template-name="mihome-cloud">
+  <div class="form-row">
+    <label for="node-config-input-email"><i class="fa fa-envelope"></i> Email</label>
+    <input type="text" id="node-config-input-email" placeholder="Email" />
+  </div>
+  <div class="form-row">
+    <label for="node-config-input-password"><i class="fa fa-key"></i> Password</label>
+    <input type="password" id="node-config-input-password" placeholder="Password" />
+  </div>
+  <div class="form-row">
+    <label for="node-config-input-country"><i class="fa fa-globe"></i> Country</label>
+    <select id="node-config-input-country">
+      <option value="ru">ru</option>
+      <option value="us">us</option>
+      <option value="tw">tw</option>
+      <option value="sg">sg</option>
+      <option value="cn">cn</option>
+      <option value="de">de</option>
+    </select>
+  </div>
+</script>
+<script type="text/html" data-help-name="mihome-cloud">
+  <p>Provide authorization for Mi Home</p>
+</script>
