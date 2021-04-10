@@ -2,6 +2,10 @@
 
 Add nodes to get data from devices connected to Mi Home.
 
+## Install
+
+Run `npm i node-red-contrib-mihome` in `~/.node-red` directory or search `node-red-contrib-mihome` and install from **Palette Manager**.
+
 ## Supported devices
 
 ### Xiaomi Mi Temperature and Humidity Monitor 2
