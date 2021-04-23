@@ -2,8 +2,8 @@
 
 [![platform](https://img.shields.io/badge/platform-Node--RED-red?style=flat-square)](https://nodered.org)
 [![npm](https://img.shields.io/npm/v/node-red-contrib-mihome?style=flat-square)](https://www.npmjs.com/package/node-red-contrib-mihome)
-![npm](https://img.shields.io/npm/dt/node-red-contrib-mihome?style=flat-square)
-![npm](https://img.shields.io/npm/l/node-red-contrib-mihome?style=flat-square)
+[![npm](https://img.shields.io/npm/dt/node-red-contrib-mihome?style=flat-square)](https://www.npmjs.com/package/node-red-contrib-mihome)
+[![GitHub](https://img.shields.io/github/license/BOOMER74/node-red-contrib-mihome?style=flat-square)](https://github.com/BOOMER74/node-red-contrib-mihome/blob/master/LICENSE)
 
 Add nodes to get data from devices connected to Mi Home using [node-mihome](https://github.com/maxinminax/node-mihome).
 
