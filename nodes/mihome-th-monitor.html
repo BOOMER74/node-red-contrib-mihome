@@ -1,15 +1,22 @@
 <script type="text/javascript">
   RED.nodes.registerType('mihome-th-monitor', {
-    category: 'Mi Home',
+    category: 'mihome',
     color: '#00BC9C',
     defaults: {
       cloud: { value: null, type: 'mihome-cloud' },
       did: { value: null },
+      name: { value: null },
     },
     icon: 'mihome.png',
     inputs: 1,
     outputs: 1,
-    label: () => 'TH Monitor',
+    label() {
+      if (this.name != null && this.name.length > 0) {
+        return this.name;
+      }
+
+      return 'TH Monitor';
+    },
   });
 </script>
 <script type="text/html" data-template-name="mihome-th-monitor">
@@ -20,6 +27,10 @@
   <div class="form-row">
     <label for="node-input-did"><i class="fa fa-microchip"></i> Device ID</label>
     <input type="text" id="node-input-did" placeholder="Device ID" />
+  </div>
+  <div class="form-row">
+    <label for="node-input-name"><i class="fa fa-pencil"></i> Name</label>
+    <input type="text" id="node-input-name" placeholder="Name" />
   </div>
 </script>
 <script type="text/html" data-help-name="mihome-th-monitor">

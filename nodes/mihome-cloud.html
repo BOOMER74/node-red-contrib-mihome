@@ -3,6 +3,7 @@
     category: 'config',
     color: '#00BC9C',
     defaults: {
+      aqara: { value: false },
       country: { value: 'ru' },
       email: { value: null },
     },
@@ -35,7 +36,7 @@
   </div>
   <div class="form-row">
     <label for="node-config-input-country"><i class="fa fa-globe"></i> Country</label>
-    <select id="node-config-input-country">
+    <select id="node-config-input-country" style="width: 70%">
       <option value="ru">ru</option>
       <option value="us">us</option>
       <option value="tw">tw</option>
@@ -43,6 +44,17 @@
       <option value="cn">cn</option>
       <option value="de">de</option>
     </select>
+  </div>
+  <div class="form-row">
+    <label for="node-config-input-aqara"><i class="fa fa-plug"></i> Aqara</label>
+    <label for="node-config-input-aqara" style="width: 70%">
+      <input
+        type="checkbox"
+        id="node-config-input-aqara"
+        style="display: inline-block; vertical-align: baseline; width: auto"
+      />
+      Enable Aqara protocol
+    </label>
   </div>
 </script>
 <script type="text/html" data-help-name="mihome-cloud">

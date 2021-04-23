@@ -4,53 +4,84 @@ module.exports = (RED) => {
   function Cloud(config) {
     RED.nodes.createNode(this, config);
 
-    this.country = config.country;
     this.connected = false;
+    this.country = config.country;
 
     this.miio = null;
-    this.protocol = null;
+    this.aqara = null;
+    this.mihome = null;
+
+    const context = this.context();
 
     this.init = async () => {
-      if (this.protocol == null || !this.protocol.isLoggedIn) {
-        const { miCloudProtocol: protocol, miioProtocol: miio } = mihome;
+      if (this.mihome == null && !context.get('mihome-cloud-init')) {
+        context.set('mihome-cloud-init', true);
 
-        this.miio = miio;
-        this.protocol = protocol;
+        const { miCloudProtocol, miioProtocol } = mihome;
 
-        await miio.init();
+        this.miio = miioProtocol;
+        this.mihome = miCloudProtocol;
+
+        this.miio.init();
+
+        if (config.aqara) {
+          this.aqara = mihome.aqaraProtocol;
+
+          this.aqara.init();
+        }
 
         const { email, password } = this.credentials;
 
         try {
-          await protocol.login(email, password);
+          await this.mihome.login(email, password);
+
+          this.connected = true;
 
           this.emit('connected');
         } catch (exception) {
-          this.emit('close', exception.message);
+          this.emit('close');
+
+          this.error(`Mi Home: Cloud: ${exception.message}`);
+        } finally {
+          context.set('mihome-cloud-init', false);
         }
-      } else {
-        this.emit('connected');
+      } else if (!this.connected) {
+        await new Promise((resolve) => {
+          const checkConnection = () => {
+            if (this.mihome.isLoggedIn || !context.get('mihome-cloud-init')) {
+              resolve();
+            } else {
+              setTimeout(checkConnection, 500);
+            }
+          };
+
+          checkConnection();
+        });
       }
     };
 
-    this.on('connected', () => {
-      this.connected = true;
-    });
-
-    this.on('disconnected', () => {
+    this.on('close', () => {
       this.connected = false;
-    });
 
-    this.on('close', async () => {
-      this.emit('disconnected');
+      if (this.mihome != null) {
+        this.mihome.logout();
 
-      if (this.protocol != null && this.protocol.isLoggedIn) {
-        this.protocol.logout();
+        this.mihome = null;
+      }
+
+      if (this.aqara != null) {
+        this.aqara.destroy();
+
+        this.aqara = null;
       }
 
       if (this.miio != null) {
         this.miio.destroy();
+
+        this.miio = null;
       }
+
+      this.emit('disconnected');
     });
   }
 

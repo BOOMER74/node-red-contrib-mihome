@@ -1,0 +1,37 @@
+<script type="text/javascript">
+  RED.nodes.registerType('mihome-node', {
+    category: 'mihome',
+    color: '#00BC9C',
+    defaults: {
+      // Mi Home settings node
+      cloud: { value: null, type: 'mihome-cloud' },
+      // Add additional settings for node
+      name: { value: '' },
+    },
+    icon: 'mihome.png',
+    inputs: 1,
+    outputs: 1,
+    label: () => {
+      if (this.name.length > 0) {
+        return this.name;
+      }
+
+      return 'Node';
+    },
+  });
+</script>
+<script type="text/html" data-template-name="mihome-node">
+  <!-- Mi Home settings node field -->
+  <div class="form-row">
+    <label for="node-input-cloud"><i class="fa fa-cloud"></i> Cloud</label>
+    <input id="node-input-cloud" />
+  </div>
+  <!-- Add additional fields to setup node settings -->
+  <div class="form-row">
+    <label for="node-input-name"><i class="fa fa-pencil"></i> Name</label>
+    <input type="text" id="node-input-name" />
+  </div>
+</script>
+<script type="text/html" data-help-name="mihome-node">
+  <p>Add some help text</p>
+</script>

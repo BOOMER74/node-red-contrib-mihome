@@ -2,7 +2,7 @@
   "name": "node-red-contrib-mihome",
   "description": "Get Xiaomi device information from Mi Home",
   "license": "MIT",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "author": {
     "email": "admin@bomer74.ru",
     "name": "BOOMER74",
@@ -23,6 +23,7 @@
   },
   "keywords": [
     "node-red",
+    "node-red-contrib",
     "mi",
     "miio",
     "mihome",

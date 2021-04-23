@@ -7,24 +7,17 @@ module.exports = (RED) => {
   function THMonitor(config) {
     RED.nodes.createNode(this, config);
 
+    this.name = null;
+
     this.status({ fill: 'red', shape: 'dot', text: 'offline' });
 
     const cloud = RED.nodes.getNode(config.cloud);
 
-    if (cloud != null) {
-      const sendNull = () => {
-        this.send({
-          payload: {
-            temperature: null,
-            humidity: null,
-          },
-        });
-      };
-
+    if (cloud != null && config.did != null) {
       cloud.init().then(async () => {
-        const { connected, country, protocol } = cloud;
+        const { connected, country, mihome: protocol } = cloud;
 
-        if (config.did != null) {
+        if (connected) {
           let device;
 
           try {
@@ -32,90 +25,105 @@ module.exports = (RED) => {
 
             device = _device;
           } catch (exception) {
-            this.warn(exception.message);
+            this.warn(`Mi Home: TH Monitor: ${exception.message}`);
           }
 
           if (device != null && device.model === 'miaomiaoce.sensor_ht.t2') {
-            // config.name = device.name;
-
-            if (connected) {
-              this.status({ fill: 'green', shape: 'dot', text: `online: ${device.name}` });
+            if (config.name == null || config.name.length === 0) {
+              this.name = device.name;
             }
 
-            cloud.on('connected', () => {
-              this.status({ fill: 'green', shape: 'dot', text: `online: ${device.name}` });
-            });
-
-            cloud.on('disconnected', () => {
-              this.status({ fill: 'red', shape: 'dot', text: 'offline' });
-            });
-
-            this.on('input', async (msg) => {
-              if (msg.payload === true && cloud.connected && config.did !== null) {
-                const now = Math.round(new Date().getTime() / 1000);
-
-                const payload = {
-                  did: config.did,
-                  type: 'prop',
-                  time_start: now - twoDaysSeconds,
-                  time_end: now,
-                };
-
-                let temperatures;
-                let humidities;
-
-                try {
-                  const { result: _temperatures = [] } = await protocol.request(
-                    '/user/get_user_device_data',
-                    {
-                      ...payload,
-                      key: 0x1004,
-                    },
-                    country,
-                  );
-                  const { result: _humidities = [] } = await protocol.request(
-                    '/user/get_user_device_data',
-                    {
-                      ...payload,
-                      key: 0x1006,
-                    },
-                    country,
-                  );
-
-                  temperatures = _temperatures;
-                  humidities = _humidities;
-                } catch (exception) {
-                  this.warn(exception.message);
-                }
-
-                const lastTemperature = firstItem(sortByField(temperatures, 'time'));
-                const lastHumidity = firstItem(sortByField(humidities, 'time'));
-
-                if (lastTemperature == null || lastHumidity == null) {
-                  sendNull();
-                } else {
-                  const temperature = decodeHexString(decodeValueString(lastTemperature.value));
-                  const humidity = decodeHexString(decodeValueString(lastHumidity.value));
-
-                  if (temperature == null || humidity == null) {
-                    sendNull();
-                  } else {
-                    this.send({
-                      payload: {
-                        temperature: temperature / 10,
-                        humidity: humidity / 10,
-                        timestamps: {
-                          temperature: lastTemperature.time,
-                          humidity: lastHumidity.time,
-                        },
-                      },
-                    });
-                  }
-                }
-              }
-            });
+            this.status({ fill: 'green', shape: 'dot', text: `online: ${device.name}` });
           }
         }
+
+        this.on('input', async (msg) => {
+          if (connected && msg.payload === true) {
+            const now = Math.round(new Date().getTime() / 1000);
+
+            const payload = {
+              did: config.did,
+              type: 'prop',
+              time_start: now - twoDaysSeconds,
+              time_end: now,
+            };
+
+            let temperatures;
+            let humidities;
+            let batteries;
+
+            try {
+              const { result: _temperatures = [] } = await protocol.request(
+                '/user/get_user_device_data',
+                {
+                  ...payload,
+                  key: 0x1004,
+                },
+                country,
+              );
+              const { result: _humidities = [] } = await protocol.request(
+                '/user/get_user_device_data',
+                {
+                  ...payload,
+                  key: 0x1006,
+                },
+                country,
+              );
+              const { result: _batteries = [] } = await protocol.request(
+                '/user/get_user_device_data',
+                {
+                  ...payload,
+                  key: 0x100a,
+                },
+                country,
+              );
+
+              temperatures = _temperatures;
+              humidities = _humidities;
+              batteries = _batteries;
+            } catch (exception) {
+              this.warn(`Mi Home: TH Monitor: ${exception.message}`);
+            }
+
+            if (temperatures != null && humidities != null) {
+              const lastTemperature = firstItem(sortByField(temperatures, 'time'));
+              const lastHumidity = firstItem(sortByField(humidities, 'time'));
+              const lastBattery = firstItem(sortByField(batteries, 'time'));
+
+              if (lastTemperature == null || lastHumidity == null) {
+                this.warn('Mi Home: TH Monitor: cannot find last data for temperature or humidity');
+              } else {
+                const temperature = decodeHexString(decodeValueString(lastTemperature.value));
+                const humidity = decodeHexString(decodeValueString(lastHumidity.value));
+                const battery = lastBattery == null ? null : decodeHexString(decodeValueString(lastBattery.value));
+
+                if (temperature == null || humidity == null) {
+                  this.warn('Mi Home: TH Monitor: cannot decode data for temperature or humidity');
+                } else {
+                  this.send({
+                    payload: {
+                      battery,
+                      temperature: temperature / 10,
+                      humidity: humidity / 10,
+                      timestamps: {
+                        temperature: lastTemperature.time,
+                        humidity: lastHumidity.time,
+                      },
+                    },
+                  });
+                }
+              }
+            }
+          }
+        });
+      });
+
+      cloud.on('connected', () => {
+        this.status({ fill: 'green', shape: 'dot', text: this.name == null ? 'online' : `online: ${this.name}` });
+      });
+
+      cloud.on('disconnected', () => {
+        this.status({ fill: 'red', shape: 'dot', text: 'offline' });
       });
     }
   }

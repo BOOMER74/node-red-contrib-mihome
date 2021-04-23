@@ -1,5 +1,5 @@
 module.exports = (RED) => {
-  function Devices(config) {
+  function Node(config) {
     RED.nodes.createNode(this, config);
 
     this.status({ fill: 'red', shape: 'dot', text: 'offline' });
@@ -7,8 +7,10 @@ module.exports = (RED) => {
     const cloud = RED.nodes.getNode(config.cloud);
 
     if (cloud != null) {
+      // Initialize Mi Home connection
       cloud.init().then(() => {
-        const { connected, country, mihome: protocol } = cloud;
+        // Get protocol object and required data
+        const { connected, country, mihome: protocol /* aqara: protocol */ } = cloud;
 
         if (connected) {
           this.status({ fill: 'green', shape: 'dot', text: 'online' });
@@ -16,22 +18,25 @@ module.exports = (RED) => {
 
         this.on('input', async (msg) => {
           if (connected && msg.payload === true) {
-            const devices = await protocol.getDevices(null, { country });
+            // Call some protocol function
+            const result = await protocol.miioCall('did', 'method', {}, country);
+            // Or initialize device and call his method,
+            // see https://github.com/maxinminax/node-mihome#create-device for details
 
-            this.send({ payload: devices });
+            this.send({ payload: result });
           }
         });
       });
 
-      cloud.on('connected', async () => {
+      cloud.on('connect', async () => {
         this.status({ fill: 'green', shape: 'dot', text: 'online' });
       });
 
-      cloud.on('disconnected', () => {
+      cloud.on('disconnect', () => {
         this.status({ fill: 'red', shape: 'dot', text: 'offline' });
       });
     }
   }
 
-  RED.nodes.registerType('mihome-devices', Devices);
+  RED.nodes.registerType('mihome-node', Node);
 };
