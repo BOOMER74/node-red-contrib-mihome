@@ -1,6 +1,6 @@
 # Changelog
 
-## v1.1.0
+## v1.1.0 (2021-04-29)
 
 * **Breaking change**: changed `mihome-cloud` node Email field to Username, reconfigure node it to continue working
 * Add additional node status for `mihome-th-monitor`
