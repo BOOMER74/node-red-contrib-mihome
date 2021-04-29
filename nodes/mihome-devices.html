@@ -1,4 +1,9 @@
 <script type="text/javascript">
+  // noinspection JSCheckFunctionSignatures
+  /**
+   * @namespace {import('node-red__registry')}
+   * @member {NodeAPI} RED
+   */
   RED.nodes.registerType('mihome-devices', {
     category: 'mihome',
     color: '#00BC9C',
@@ -9,6 +14,7 @@
     icon: 'mihome.png',
     inputs: 1,
     outputs: 1,
+    paletteLabel: 'devices',
     label() {
       if (this.name != null && this.name.length > 0) {
         return this.name;

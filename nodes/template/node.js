@@ -1,9 +1,16 @@
 module.exports = (RED) => {
+  /**
+   * @namespace {import('node-red__registry')}
+   * @member {NodeAPI} RED
+   */
   function Node(config) {
     RED.nodes.createNode(this, config);
 
     this.status({ fill: 'red', shape: 'dot', text: 'offline' });
 
+    /**
+     * @type {Cloud & Node & EventEmitter}
+     */
     const cloud = RED.nodes.getNode(config.cloud);
 
     if (cloud != null) {

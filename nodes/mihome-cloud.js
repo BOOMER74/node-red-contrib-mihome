@@ -1,6 +1,11 @@
 const mihome = require('node-mihome');
 
 module.exports = (RED) => {
+  /**
+   * @namespace {import('node-red__registry')}
+   * @member {NodeAPI} RED
+   * @method Cloud.init
+   */
   function Cloud(config) {
     RED.nodes.createNode(this, config);
 
@@ -30,10 +35,10 @@ module.exports = (RED) => {
           this.aqara.init();
         }
 
-        const { email, password } = this.credentials;
+        const { username, password } = this.credentials;
 
         try {
-          await this.mihome.login(email, password);
+          await this.mihome.login(username, password);
 
           this.connected = true;
 
@@ -87,7 +92,7 @@ module.exports = (RED) => {
 
   RED.nodes.registerType('mihome-cloud', Cloud, {
     credentials: {
-      email: { type: 'text' },
+      username: { type: 'text' },
       password: { type: 'password' },
     },
   });

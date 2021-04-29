@@ -1,34 +1,40 @@
 <script type="text/javascript">
+  // noinspection JSCheckFunctionSignatures,JSUnusedGlobalSymbols
+  /**
+   * @namespace {import('node-red__registry')}
+   * @member {NodeAPI} RED
+   */
   RED.nodes.registerType('mihome-cloud', {
     category: 'config',
     color: '#00BC9C',
     defaults: {
       aqara: { value: false },
       country: { value: 'ru' },
-      email: { value: null },
+      username: { value: null },
     },
     credentials: {
-      email: { type: 'text' },
+      username: { type: 'text' },
       password: { type: 'password' },
     },
+    paletteLabel: 'cloud',
     label() {
-      const { email } = this;
+      const { username } = this;
 
-      if (email == null) {
+      if (username == null) {
         return 'Login to Mi Home';
       }
 
-      return `Mi Home: ${email}`;
+      return `Mi Home: ${username}`;
     },
     oneditsave() {
-      this.email = this.credentials.email;
+      this.username = this.credentials.username;
     },
   });
 </script>
 <script type="text/html" data-template-name="mihome-cloud">
   <div class="form-row">
-    <label for="node-config-input-email"><i class="fa fa-envelope"></i> Email</label>
-    <input type="text" id="node-config-input-email" placeholder="Email" />
+    <label for="node-config-input-username"><i class="fa fa-user"></i> Username</label>
+    <input type="text" id="node-config-input-username" placeholder="Email / Phone number / Mi Account" />
   </div>
   <div class="form-row">
     <label for="node-config-input-password"><i class="fa fa-key"></i> Password</label>

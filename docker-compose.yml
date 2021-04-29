@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  node-red-contrib-mihome:
+    build: .
+    image: node-red-contrib-mihome
+    container_name: node-red-contrib-mihome
+    hostname: node-red-contrib-mihome
+    ports:
+      - 1880:1880
+    restart: unless-stopped
+    volumes:
+      - node-red-contrib-mihome:/home/node/.node-red
+      - .:/home/node/node-red-contrib-mihome:ro
+
+volumes:
+  node-red-contrib-mihome:

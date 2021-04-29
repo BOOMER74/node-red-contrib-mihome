@@ -4,6 +4,10 @@ const { firstItem, sortByField } = require('../utils/array');
 const twoDaysSeconds = 2 * 24 * 60 * 60;
 
 module.exports = (RED) => {
+  /**
+   * @namespace {import('node-red__registry')}
+   * @member {NodeAPI} RED
+   */
   function THMonitor(config) {
     RED.nodes.createNode(this, config);
 
@@ -11,6 +15,9 @@ module.exports = (RED) => {
 
     this.status({ fill: 'red', shape: 'dot', text: 'offline' });
 
+    /**
+     * @type {Cloud & Node & EventEmitter}
+     */
     const cloud = RED.nodes.getNode(config.cloud);
 
     if (cloud != null && config.did != null) {
@@ -119,7 +126,11 @@ module.exports = (RED) => {
       });
 
       cloud.on('connected', () => {
-        this.status({ fill: 'green', shape: 'dot', text: this.name == null ? 'online' : `online: ${this.name}` });
+        this.status({
+          fill: 'green',
+          shape: this.name == null ? 'ring' : 'dot',
+          text: this.name == null ? 'online' : `online: ${this.name}`,
+        });
       });
 
       cloud.on('disconnected', () => {
