@@ -1,0 +1,60 @@
+<script type="text/javascript">
+  // noinspection JSCheckFunctionSignatures
+  /**
+   * @namespace {import('node-red__registry')}
+   * @member {NodeAPI} RED
+   */
+  RED.nodes.registerType('mihome-th-sensor', {
+    category: 'mihome',
+    color: '#00BC9C',
+    defaults: {
+      cloud: { value: null, type: 'mihome-cloud' },
+      did: { value: null },
+      name: { value: null },
+    },
+    icon: 'mihome.png',
+    inputs: 1,
+    outputs: 1,
+    paletteLabel: 'th sensor',
+    label() {
+      if (this.name != null && this.name.length > 0) {
+        return this.name;
+      }
+
+      return 'TH Sensor';
+    },
+  });
+</script>
+<script type="text/html" data-template-name="mihome-th-sensor">
+  <div class="form-row">
+    <label for="node-input-cloud"><i class="fa fa-cloud"></i> Cloud</label>
+    <input id="node-input-cloud" />
+  </div>
+  <div class="form-row">
+    <label for="node-input-did"><i class="fa fa-microchip"></i> Device ID</label>
+    <input type="text" id="node-input-did" placeholder="Device ID" />
+  </div>
+  <div class="form-row">
+    <label for="node-input-name"><i class="fa fa-pencil"></i> Name</label>
+    <input type="text" id="node-input-name" placeholder="Name" />
+  </div>
+</script>
+<script type="text/html" data-help-name="mihome-th-sensor">
+  <p>Returns temperature and humidity values</p>
+  <h3>Inputs</h3>
+  <dl class="message-properties">
+    <dt>
+      payload
+      <span class="property-type">boolean</span>
+    </dt>
+    <dd>If true output returns object with temperature and humidity values</dd>
+  </dl>
+  <h3>Outputs</h3>
+  <dl class="message-properties">
+    <dt>
+      payload
+      <span class="property-type">Object</span>
+    </dt>
+    <dd>Object with temperature and humidity values</dd>
+  </dl>
+</script>

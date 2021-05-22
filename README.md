@@ -5,7 +5,7 @@
 [![npm](https://img.shields.io/npm/dw/node-red-contrib-mihome?style=flat-square)](https://www.npmjs.com/package/node-red-contrib-mihome)
 [![GitHub](https://img.shields.io/github/license/BOOMER74/node-red-contrib-mihome?style=flat-square)](https://github.com/BOOMER74/node-red-contrib-mihome/blob/master/LICENSE)
 
-Add nodes to get data from devices connected to Mi Home using [node-mihome](https://github.com/maxinminax/node-mihome).
+Add nodes to get data from devices connected to Mi Home using [node-mihome](https://github.com/maxinminax/node-mihome). See [changelog](CHANGELOG.md) for the latest changes.
 
 ## Requirements
 
@@ -18,9 +18,10 @@ Run `npm i node-red-contrib-mihome` in `~/.node-red` directory or search **node-
 
 ## Supported devices
 
-| Device | Model | Tested | Node | Palette name |
-| ------ | ----- | ------ | ---- | ------------ |
-| Xiaomi Mi Temperature and Humidity Monitor 2 | LYWSD03MMC (China)<br>NUN4126GL (Global, should be checked) | :white_check_mark: | `mihome-th-monitor` | th monitor |
+| Device | Models | Tested | Node info |
+| :----- | :----- | :----: | :-------- |
+| Mi Temperature and<br>Humidity Monitor 2 | LYWSD03MMC (China)<br>NUN4126GL (Global, should be checked) | ✅ | Palette name: _th monitor_<br>Node name: `mihome-th-monitor` |
+| Mi Temperature and<br>Humidity Sensor | WSDCGQ01LM | ❌ | Palette name: _th sensor_<br>Node name: `mihome-th-sensor` |
 
 ## Adding device support
 
@@ -36,16 +37,16 @@ Provide authorization for Mi Home.
 
 | Setting | Required | Description |
 | ------- | -------- | ----------- |
-| Username | :white_check_mark: | Mi Home account username |
-| Password | :white_check_mark: | Mi Home account password |
-| Country | :white_check_mark: | Which server use to connect |
-| Aqara | :x: | Should it be Aqara protocol  initiated |
+| Username | ✅ | Mi Home account username |
+| Password | ✅ | Mi Home account password |
+| Country | ✅ | Which server use to connect |
+| Aqara | ❌ | Should it be Aqara protocol  initiated |
 
 ##### Setting preview
 
 ![mihome-cloud](images/cloud-settings.png)
 
-Aqara protocol limitations: you can set up only one `mihome-cloud` node with Aqara protocol enabled, all another may cause errors (in short explanation it's because `node-mihome` open socket connection in exclusive mode).
+**Aqara protocol limitations:** you can set up only one `mihome-cloud` node with Aqara protocol enabled, all another may cause errors (in short explanation it's because `node-mihome` open socket connection in exclusive mode).
 
 ### mihome-devices
 
@@ -64,8 +65,8 @@ Palette name: devices.
 
 | Setting | Required | Description |
 | ------- | -------- | ----------- |
-| Cloud | :white_check_mark: | Mi Home account settings |
-| Name | :x: | Node display name |
+| Cloud | ✅ | Mi Home account settings |
+| Name | ❌ | Node display name |
 
 ##### Setting preview
 
@@ -96,9 +97,9 @@ Palette name: th monitor.
 
 | Setting | Required | Description |
 | ------- | -------- | ----------- |
-| Cloud | :white_check_mark: | Mi Home account settings |
-| Device ID | :white_check_mark: | Unique device ID from Mi Home, you can get it by checking `did` field from `mihome-devices` output |
-| Name | :x: | Node display name |
+| Cloud | ✅ | Mi Home account settings |
+| Device ID | ✅ | Unique device ID from Mi Home, you can get it by checking `did` field from `mihome-devices` output |
+| Name | ❌ | Node display name |
 
 ##### Setting preview
 

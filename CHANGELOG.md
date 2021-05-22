@@ -1,8 +1,12 @@
 # Changelog
 
+## v1.1.1 (2021-05-22)
+
+* Add `mihome-th-sensor` node
+
 ## v1.1.0 (2021-04-29)
 
-* **Breaking change**: changed `mihome-cloud` node Email field to Username, reconfigure node it to continue working
+* **Breaking change:** changed `mihome-cloud` node Email field to Username, reconfigure node it to continue working
 * Add additional node status for `mihome-th-monitor`
 * Add palette name for nodes
 
